@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/giovanesantossilva/grpc/pb"
 	"google.golang.org/grpc"
 	"io"
@@ -34,7 +33,7 @@ func AddUser(client pb.UserServiceClient)  {
 	if err != nil {
 		log.Fatalf("Could not make gRPC Request: %v", err)
 	}
-	fmt.Println(res)
+	log.Printf("User addeded %v\n", res)
 }
 
 func AddUserVerbose(client pb.UserServiceClient) {
@@ -56,20 +55,20 @@ func AddUserVerbose(client pb.UserServiceClient) {
 		if err != nil {
 			log.Fatalf("Could not receive the msg: %v", err)
 		}
-		fmt.Println("Status:", stream.Status)
+		log.Println("Status user:", stream.Status)
 	}
 }
 
 func AddUsers(client pb.UserServiceClient)  {
 	reqs := []*pb.User{
-		&pb.User{
-			Id: "1",
-			Name: "Giovane",
+		{
+			Id:    "1",
+			Name:  "Giovane",
 			Email: "giovane@gmail.com",
 		},
-		&pb.User{
-			Id: "2",
-			Name: "Gustavo",
+		{
+			Id:    "2",
+			Name:  "Gustavo",
 			Email: "gustavo@gmail.com",
 		},
 	}
@@ -89,19 +88,19 @@ func AddUsers(client pb.UserServiceClient)  {
 		log.Fatalf("Error receving response: %v", err)
 	}
 
-	fmt.Println(res)
+	log.Printf("Users addeded %v\n", res)
 }
 
 func AddUserStreamBoth(client pb.UserServiceClient) {
 	reqs := []*pb.User{
-		&pb.User{
-			Id: "1",
-			Name: "Giovane",
+		{
+			Id:    "1",
+			Name:  "Giovane",
 			Email: "giovane@gmail.com",
 		},
-		&pb.User{
-			Id: "2",
-			Name: "Gustavo",
+		{
+			Id:    "2",
+			Name:  "Gustavo",
 			Email: "gustavo@gmail.com",
 		},
 	}
@@ -115,7 +114,7 @@ func AddUserStreamBoth(client pb.UserServiceClient) {
 
 	go func() {
 		for _, req := range reqs {
-			fmt.Println("Sending user: ", req.Name)
+			log.Printf("Sending user %v\n", req)
 			stream.Send(req)
 			time.Sleep(time.Second * 2)
 		}
@@ -131,7 +130,7 @@ func AddUserStreamBoth(client pb.UserServiceClient) {
 			if err != nil {
 				log.Fatalf("Could not receive the msg: %v", err)
 			}
-			fmt.Printf("User: %v status: %v\n", res.GetUser().GetName(), res.GetStatus())
+			log.Printf("User %v status %v\n", res.GetUser().GetName(), res.GetStatus())
 		}
 		close(wait)
 	}()

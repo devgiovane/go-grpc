@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"fmt"
 	"github.com/giovanesantossilva/grpc/pb"
 	"io"
 	"log"
@@ -18,7 +17,8 @@ func NewUserService() *UserService {
 }
 
 func (*UserService) AddUser(ctx context.Context, req *pb.User) (*pb.User, error) {
-	return &pb.User{Id: "123", Name: req.GetName(), Email: req.GetEmail()}, nil
+	log.Printf("Addeded user: %v\n", req)
+	return &pb.User{Id: req.GetId(), Name: req.GetName(), Email: req.GetEmail()}, nil
 }
 
 func (*UserService) AddUserVerbose(req *pb.User, stream pb.UserService_AddUserVerboseServer)  error {
@@ -41,6 +41,7 @@ func (*UserService) AddUserVerbose(req *pb.User, stream pb.UserService_AddUserVe
 		User: &pb.User{Id: "123", Name: req.GetName(), Email: req.GetEmail()},
 	})
 
+	log.Printf("Addeded user: %v\n", req)
 	return nil
 }
 
@@ -63,7 +64,7 @@ func (*UserService) AddUsers(stream pb.UserService_AddUsersServer) error {
 			Email: req.GetEmail(),
 		})
 
-		fmt.Println("Adding", req.GetName())
+		log.Printf("Adding %v\n", req)
 	}
 }
 
